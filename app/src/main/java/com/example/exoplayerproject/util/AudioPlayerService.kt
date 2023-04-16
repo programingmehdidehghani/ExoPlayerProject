@@ -1,5 +1,6 @@
 package com.example.exoplayerproject.util
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.Intent
@@ -59,12 +60,13 @@ class AudioPlayerService: LifecycleService(), Player.Listener {
             .setChannelDescriptionResourceId(R.string.playback_channel_description)
             .setMediaDescriptionAdapter(object: PlayerNotificationManager.MediaDescriptionAdapter{
 
+                @SuppressLint("UnspecifiedImmutableFlag")
                 override fun createCurrentContentIntent(player: Player): PendingIntent? {
                     val intent = Intent(context, BasicAudioPlayerWithNotification::class.java)
                     return PendingIntent.getActivities(
                         context,
                         0,
-                        intent,
+                        arrayOf(intent),
                         PendingIntent.FLAG_UPDATE_CURRENT
                     )
                 }
