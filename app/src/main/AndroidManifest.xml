@@ -15,10 +15,16 @@
         android:theme="@style/Theme.ExoPlayerProject"
         tools:targetApi="31">
         <activity
-            android:name=".BasicAudioPlayer"
-            android:exported="false" />
+            android:name="ui.BasicAudioPlayerWithHLSMediaSource"
+            android:exported="false"
+            tools:ignore="MissingClass" />
+        <activity
+            android:name="ui.BasicAudioPlayer"
+            android:exported="false"
+            tools:ignore="MissingClass" />
         <activity
             android:name=".ui.BasicMediaPlayerWithPlaylist"
+            android:configChanges="orientation|screenSize"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
