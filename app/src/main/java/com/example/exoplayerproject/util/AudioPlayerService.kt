@@ -1,8 +1,11 @@
 package com.example.exoplayerproject.util
 
+import android.app.Notification
 import android.app.PendingIntent
 import android.content.Intent
 import android.graphics.Bitmap
+import android.os.Binder
+import android.os.IBinder
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
 import com.example.exoplayerproject.R
@@ -14,6 +17,7 @@ import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 
+@Suppress("DEPRECATION")
 class AudioPlayerService: LifecycleService(), Player.Listener {
 
     private var exoPlayer: ExoPlayer? = null
@@ -93,5 +97,52 @@ class AudioPlayerService: LifecycleService(), Player.Listener {
     private var playerNotificationListener: PlayerNotificationManager.NotificationListener =
         object: PlayerNotificationManager.NotificationListener{
 
+            override fun onNotificationCancelled(notificationId: Int, dismissedByUser: Boolean) {
+                super.onNotificationCancelled(notificationId, dismissedByUser)
+                stopSelf()
+            }
+
+            override fun onNotificationPosted(
+                notificationId: Int,
+                notification: Notification,
+                ongoing: Boolean
+            ) {
+                super.onNotificationPosted(notificationId, notification, ongoing)
+                if (ongoing){
+                    startForeground(notificationId,notification)
+                } else{
+                    stopForeground(false)
+                }
+            }
         }
+
+    override fun onDestroy() {
+        exoPlayer?.let {
+            playerNotificationPlayer?.let {
+                it.setPlayer(null)
+                playerNotificationPlayer = null
+            }
+            it.removeListener(this)
+            it.release()
+            exoPlayer = null
+        }
+        super.onDestroy()
+    }
+
+    inner class AudioPlayerServiceBinder: Binder(){
+        fun getSimpleExoPlayerInstance() = exoPlayer
+
+        fun getTitleLiveData() = songTitleLiveData
+        fun getDescriptionLiveData() = songDescriptionLiveData
+
+        fun getIconLiveData() = songIconLiveData
+    }
+
+    override fun onBind(intent: Intent): IBinder? {
+        return super.onBind(intent)
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        return super.onStartCommand(intent, flags, startId)
+    }
 }
