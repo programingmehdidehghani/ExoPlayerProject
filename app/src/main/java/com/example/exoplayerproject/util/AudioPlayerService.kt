@@ -1,11 +1,16 @@
 package com.example.exoplayerproject.util
 
-import android.app.Service
+import android.app.PendingIntent
+import android.content.Intent
+import android.graphics.Bitmap
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
+import com.example.exoplayerproject.R
 import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 
@@ -26,7 +31,67 @@ class AudioPlayerService: LifecycleService(), Player.Listener {
         val defaultDataSourceFactory = DefaultHttpDataSource.Factory()
         val concatenatingMediaSource = ConcatenatingMediaSource()
 
-        for (sample in C)
+        for (sample in Constants.MP3_SAMPLE_PLAYLIST){
+            val progressiveMediaSource =
+                ProgressiveMediaSource.Factory(defaultDataSourceFactory)
+                    .createMediaSource(MediaItem.fromUri(sample.uri))
+            concatenatingMediaSource.addMediaSource(progressiveMediaSource)
+        }
+
+        exoPlayer?.let {
+            it.addListener(this)
+            it.setMediaSource(concatenatingMediaSource)
+            it.prepare()
+            it.playWhenReady = true
+        }
+        setupNotification(context)
     }
 
+    private fun setupNotification(context: AudioPlayerService){
+        playerNotificationPlayer = PlayerNotificationManager.Builder(
+            context,
+            Constants.PLAYBACK_NOTIFICATION_ID, Constants.PLAYBACK_CHANNEL_ID
+        ).setChannelImportance(R.string.playback_channel_name)
+            .setChannelDescriptionResourceId(R.string.playback_channel_description)
+            .setMediaDescriptionAdapter(object: PlayerNotificationManager.MediaDescriptionAdapter{
+
+                override fun createCurrentContentIntent(player: Player): PendingIntent? {
+                    val intent = Intent(context, BasicAudioPlayerWithNotification::class.java)
+                    return PendingIntent.getActivities(
+                        context,
+                        0,
+                        intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                    )
+                }
+
+                override fun getCurrentContentText(player: Player): CharSequence? {
+                    songDescriptionLiveData.postValue(Constants.MP3_SAMPLE_PLAYLIST[player.currentMediaItemIndex].description)
+                    return Constants.MP3_SAMPLE_PLAYLIST[player.currentMediaItemIndex].description
+                }
+
+                override fun getCurrentContentTitle(player: Player): CharSequence {
+                    songTitleLiveData.postValue(Constants.MP3_SAMPLE_PLAYLIST[player.currentMediaItemIndex].title)
+                    return Constants.MP3_SAMPLE_PLAYLIST[player.currentMediaItemIndex].title
+                }
+
+                override fun getCurrentLargeIcon(
+                    player: Player,
+                    callback: PlayerNotificationManager.BitmapCallback
+                ): Bitmap? {
+                    songIconLiveData.postValue(Constants.MP3_SAMPLE_PLAYLIST[player.currentMediaItemIndex].bitmapResource)
+                    return Constants.getBitmap(
+                        context,
+                        Constants.MP3_SAMPLE_PLAYLIST[player.currentMediaItemIndex].bitmapResource
+                    )
+                }
+            })
+            .setNotificationListener(playerNotificationListener)
+            .build()
+    }
+
+    private var playerNotificationListener: PlayerNotificationManager.NotificationListener =
+        object: PlayerNotificationManager.NotificationListener{
+
+        }
 }

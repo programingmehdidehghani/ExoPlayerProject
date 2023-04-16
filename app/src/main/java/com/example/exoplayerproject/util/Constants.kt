@@ -49,21 +49,21 @@ object Constants {
             "audio_1",
             "Jazz in Paris",
             "Jazz for the masses",
-            R.drawable.goku.toString()
+            R.drawable.goku
         ),
         Media(
             uriParser("https://storage.googleapis.com/automotive-media/The_Messenger.mp3"),
             "audio_2",
             "The messenger",
             "Hipster guide to London",
-            R.drawable.goku_second.toString()
+            R.drawable.goku_second
         ),
         Media(
             uriParser("https://storage.googleapis.com/automotive-media/Talkies.mp3"),
             "audio_3",
             "Talkies",
             "If it talks like a duck and walks like a duck.",
-            R.drawable.goku_third.toString()
+            R.drawable.goku_third
         )
     )
 
@@ -75,7 +75,7 @@ object Constants {
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
-    fun getBitmap(context: Context, @DrawableRes bitmapResource: Int): Bitmap?{
+    fun getBitmap(context: Context, @SuppressLint("SupportAnnotationUsage") @DrawableRes bitmapResource: Int): Bitmap?{
         return (context.getDrawable(bitmapResource) as BitmapDrawable).bitmap
     }
 

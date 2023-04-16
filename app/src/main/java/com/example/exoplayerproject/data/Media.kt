@@ -7,5 +7,5 @@ data class Media(
     var mediaId: String,
     var title: String,
     var description: String,
-    var bitmapResource: String
+    var bitmapResource: Int
 )
