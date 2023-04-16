@@ -29,7 +29,6 @@ class AudioPlayerService: LifecycleService(), Player.Listener {
     private var songIconLiveData = MutableLiveData<Int>()
 
     private var playerNotificationPlayer: PlayerNotificationManager? = null
-   // private var binder: AudioPlayerServiceBinder()
 
     private fun startPlayer(){
         val context = this

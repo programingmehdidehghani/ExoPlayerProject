@@ -3,7 +3,6 @@ package com.example.exoplayerproject.ui
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.exoplayerproject.R
 import com.example.exoplayerproject.databinding.ActivityBasicAudioPlayerWithHlsmediaSourceBinding
 import com.example.exoplayerproject.util.Constants
 import com.google.android.exoplayer2.ExoPlayer
