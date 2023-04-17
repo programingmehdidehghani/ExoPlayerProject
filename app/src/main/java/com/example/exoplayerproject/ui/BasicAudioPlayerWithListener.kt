@@ -2,6 +2,7 @@ package com.example.exoplayerproject.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import com.example.exoplayerproject.R
 import com.example.exoplayerproject.databinding.ActivityBasicAudioPlayerWithListenerBinding
 import com.google.android.exoplayer2.*
@@ -12,6 +13,8 @@ import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.upstream.DefaultDataSource
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.google.android.exoplayer2.util.EventLogger
+import com.google.android.exoplayer2.util.Util
+import kotlinx.android.synthetic.main.activity_basic_audio_player_with_listener.*
 
 class BasicAudioPlayerWithListener : AppCompatActivity() {
 
@@ -105,8 +108,53 @@ class BasicAudioPlayerWithListener : AppCompatActivity() {
             super.onTimelineChanged(timeline, reason)
         }
 
-        override fun onPlaybackStateChanged(playbackState: Int) {
-            super.onPlaybackStateChanged(playbackState)
+        override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+            super.onPlayerStateChanged(playWhenReady, playbackState)
+            when(playbackState){
+                ExoPlayer.STATE_IDLE -> {
+                    basic_audio_player_with_listener_progress_view_text_view.text = "STATE_IDLE"
+                }
+                ExoPlayer.STATE_BUFFERING ->{
+                    basic_audio_player_with_listener_progress_view_text_view.text =
+                        "STATE_BUFFERING"
+                    basic_audio_player_with_listener_progress_view.visibility = View.VISIBLE
+                }
+                ExoPlayer.STATE_READY -> {
+                    basic_audio_player_with_listener_progress_view_text_view.text = "STATE_READY"
+                    basic_audio_player_with_listener_progress_view.visibility = View.INVISIBLE
+                }
+                ExoPlayer.STATE_ENDED -> {
+                    basic_audio_player_with_listener_progress_view_text_view.text = "STATE_ENDED"
+                }
+                else -> {
+                    basic_audio_player_with_listener_progress_view_text_view.text = "UNKNOWN"
+                }
+            }
+        }
+
+        override fun onIsPlayingChanged(isPlaying: Boolean) {
+            super.onIsPlayingChanged(isPlaying)
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (Util.SDK_INT >= 24){
+            initializeExoPlayer()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (Util.SDK_INT < 24){
+            releasePlayer()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (Util.SDK_INT >= 24){
+            releasePlayer()
         }
     }
 }
