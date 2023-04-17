@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.exoplayerproject.R
 import com.example.exoplayerproject.databinding.ActivityBasicVideoPlayerWithSmoothStreamingBinding
+import com.example.exoplayerproject.util.Constants
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
@@ -13,6 +14,7 @@ import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.manifest.SsManifest
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
+import com.google.android.exoplayer2.util.Util
 import kotlinx.android.synthetic.main.activity_basic_video_player_with_smooth_streaming.*
 
 class BasicVideoPlayerWithSmoothStreaming : AppCompatActivity() {
@@ -36,7 +38,16 @@ class BasicVideoPlayerWithSmoothStreaming : AppCompatActivity() {
     }
 
     private fun initializeExoPlayer(){
-
+        exoPlayer = ExoPlayer.Builder(this).build()
+        exoPlayer?.let {
+            viewBinding.basicAudioPlayerWithSmoothStreamingPlayerView.player = exoPlayer
+            it.addListener(exoPlayerListener)
+            val mediaSource = buildMediaSource(Constants.SMOOTH_STREAM_URL)
+            it.setMediaSource(mediaSource)
+            it.playWhenReady = playPauseState
+            it.seekTo(currentWindow,playbackPosition)
+            it.prepare()
+        }
     }
 
     private fun buildMediaSource(url: String): MediaSource{
@@ -68,6 +79,34 @@ class BasicVideoPlayerWithSmoothStreaming : AppCompatActivity() {
                         "durationUs = ${smoothStreamManifest.durationUs} \n dvrWindowLengthUs = ${smoothStreamManifest.dvrWindowLengthUs} \n isLive = ${smoothStreamManifest.isLive} \n lookAheadCount = ${smoothStreamManifest.lookAheadCount} \n majorVersion = ${smoothStreamManifest.majorVersion} \n minorVersion = ${smoothStreamManifest.minorVersion} \n protectionElement = ${smoothStreamManifest.protectionElement} \n streamElements = ${smoothStreamManifest.streamElements}"
                 }
             }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (Util.SDK_INT >= 24) {
+            initializeExoPlayer()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if ((Util.SDK_INT < 24 || exoPlayer == null)) {
+            initializeExoPlayer()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (Util.SDK_INT < 24) {
+            releasePlayer()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (Util.SDK_INT >= 24) {
+            releasePlayer()
         }
     }
 }
