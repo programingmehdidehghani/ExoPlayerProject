@@ -15,6 +15,9 @@
         android:theme="@style/Theme.ExoPlayerProject"
         tools:targetApi="31">
         <activity
+            android:name=".BasicAudioPlayerWithProgressiveMediaSource"
+            android:exported="false" />
+        <activity
             android:name=".BasicAudioPlayerWithListener"
             android:exported="false" />
         <activity
