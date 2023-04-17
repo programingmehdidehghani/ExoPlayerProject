@@ -13,8 +13,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import com.example.exoplayerproject.Manifest
-import com.example.exoplayerproject.R
 import com.example.exoplayerproject.databinding.ActivityBasicVideoPlayerWithDashMediaSourceBinding
 import com.example.exoplayerproject.util.Constants
 import com.google.android.exoplayer2.ExoPlayer
