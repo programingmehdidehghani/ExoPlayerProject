@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import com.example.exoplayerproject.R
 import com.example.exoplayerproject.databinding.ActivityBasicAudioPlayerWithListenerBinding
+import com.example.exoplayerproject.util.Constants
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -44,7 +45,13 @@ class BasicAudioPlayerWithListener : AppCompatActivity() {
         exoPlayer = ExoPlayer.Builder(this).build()
         exoPlayer?.let {
             viewBinding.basicAudioPlayerWithListenerPlayerView.player = exoPlayer
-            val mediaSource:
+            val mediaSource = buildMediaSource(Constants.MP3_URL)
+            it.setMediaSource(mediaSource)
+            it.playWhenReady = playPauseState
+            it.seekTo(currentWindow,playbackPosition)
+            it.addListener(exoPlayerListener)
+            it.addAnalyticsListener(eventLogger)
+            it.prepare()
         }
     }
 
