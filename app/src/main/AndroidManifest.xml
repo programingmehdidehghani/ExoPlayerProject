@@ -15,14 +15,21 @@
         android:theme="@style/Theme.ExoPlayerProject"
         tools:targetApi="31">
         <activity
+            android:name="ui.BasicVideoPlayerWithSmoothStreaming"
+            android:exported="false"
+            tools:ignore="MissingClass" />
+        <activity
             android:name="ui.BasicVideoPlayerWithDashMediaSource"
-            android:exported="false" />
+            android:exported="false"
+            tools:ignore="MissingClass" />
         <activity
             android:name="ui.BasicAudioPlayerWithProgressiveMediaSource"
-            android:exported="false" />
+            android:exported="false"
+            tools:ignore="MissingClass" />
         <activity
             android:name="ui.BasicAudioPlayerWithListener"
-            android:exported="false" />
+            android:exported="false"
+            tools:ignore="MissingClass" />
         <activity
             android:name="ui.BasicAudioPlayerWithNotification"
             android:exported="false"

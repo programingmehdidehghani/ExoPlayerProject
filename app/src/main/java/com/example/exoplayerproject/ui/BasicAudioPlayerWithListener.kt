@@ -153,7 +153,7 @@ class BasicAudioPlayerWithListener : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (Util.SDK_INT < 24){
+        if (Util.SDK_INT < 24 || exoPlayer == null){
             releasePlayer()
         }
     }
